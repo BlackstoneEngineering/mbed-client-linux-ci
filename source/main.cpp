@@ -156,7 +156,7 @@ public:
     void execute_function(void *argument) {
         if(argument) {
             char* arguments = (char*)argument;
-            printf("Received %s!!\n", arguments);
+            printf("Post Received : %s\r\n", arguments);
         }
         printf("I am executed !!\n");
     }
@@ -173,7 +173,7 @@ public:
                                                                  true);
                 char buffer[20];
                 int size = sprintf(buffer,"%d",_value);
-                  res->set_operation(M2MBase::GET_PUT_ALLOWED);
+                  res->set_operation(M2MBase::GET_PUT_POST_ALLOWED);
                   res->set_value((const uint8_t*)buffer,
                                  (const uint32_t)size);
                   res->set_execute_function(execute_callback(this,&MbedClient::execute_function));
