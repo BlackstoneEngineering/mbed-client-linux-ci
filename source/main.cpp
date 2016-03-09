@@ -43,7 +43,7 @@ const String &MODEL_NUMBER = "2015";
 const String &SERIAL_NUMBER = "12345";
 
 const uint8_t value[] = "MyValue";
-const uint8_t STATIC_VALUE[] = "Static value";
+const uint8_t STATIC_VALUE[] = "Static string value";
 
 static void ctrl_c_handle_function(void);
 typedef void (*signalhandler_t)(int); /* Function pointer type for ctrl-c */
@@ -94,7 +94,7 @@ public:
 
        _interface = M2MInterfaceFactory::create_interface(*this,
                                                   ENDPOINT_NAME,
-                                                  "test",
+                                                  "ci-endpoint",
                                                   100,
                                                   port,
                                                   MBED_USER_NAME_DOMAIN,
@@ -163,12 +163,12 @@ public:
 
     bool create_generic_object() {
         bool success = false;
-        _object = M2MInterfaceFactory::create_object("Test");
+        _object = M2MInterfaceFactory::create_object("ci-object");
         if(_object) {
             M2MObjectInstance* inst = _object->create_object_instance();
             if(inst) {
-                M2MResource* res = inst->create_dynamic_resource("D",
-                                                                 "ResourceTest",
+                M2MResource* res = inst->create_dynamic_resource("dynamic",
+                                                                 "Dynamic observable resource",
                                                                  M2MResourceInstance::INTEGER,
                                                                  true);
                 char buffer[20];
@@ -178,8 +178,8 @@ public:
                                  (const uint32_t)size);
                   res->set_execute_function(execute_callback(this,&MbedClient::execute_function));
                 _value++;
-                inst->create_static_resource("S",
-                                             "ResourceTest",
+                inst->create_static_resource("static",
+                                             "static read only resource",
                                              M2MResourceInstance::STRING,
                                              STATIC_VALUE,
                                              sizeof(STATIC_VALUE)-1);
@@ -192,8 +192,8 @@ public:
         if(_object) {
             M2MObjectInstance* inst = _object->object_instance();
             if(inst) {
-                M2MResource* res = inst->resource("D");
-                printf("Resource Value /Test/0/D : %d\n", _value);
+                M2MResource* res = inst->resource("dynamic");
+                printf("Resource Value /ci-object/0/ci-resource : %d\n", _value);
                 char buffer[20];
                 int size = sprintf(buffer,"%d",_value);
                 res->set_value((const uint8_t*)buffer,
